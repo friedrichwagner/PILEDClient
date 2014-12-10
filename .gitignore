@@ -1,0 +1,24 @@
+#Ignore Visual Studio intermediate files
+ipch/
+obj/
+bin/
+Debug/*
+!Debug/*.xml
+#!Debug/*.exe
+
+#Visual Studio Code Browsing Database (big file)
+*.sdf
+*.suo
+packages/
+*.db
+
+Release/*
+!Release/*.xml
+#!Release/*.exe
+
+#gcc *.o directory
+*.o
+*.exe
+
+#UML Documentation Tool "Ideas Modeler", ignore backup files
+*.simp.bak
