@@ -56,6 +56,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ComClient\Interfaces.cs" />
+    <Compile Include="ComClient\NeoLink.cs" />
+    <Compile Include="ComClient\PILEDServerDefine.cs" />
     <Compile Include="Helper\ColDefExt.cs" />
     <Compile Include="Helper\DaytimeCCT.cs" />
     <Compile Include="Helper\Logger.cs" />

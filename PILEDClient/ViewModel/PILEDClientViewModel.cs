@@ -8,6 +8,7 @@ using System.Windows.Input;
 using MvvmFoundation.Wpf;
 using PILEDClient;
 using Lumitech.Helpers;
+using Lumitech.Interfaces;
 
 namespace PILEDClient.ViewModel
 {
@@ -34,35 +35,24 @@ namespace PILEDClient.ViewModel
                                             }
                                       }
 
+        private NeoLink nl;
+
         public PILEDClientViewModel()
         {
             _DTCircleEnabled = true;
             _ExpertModeEnabled = false;
             dtCircle = new DaytimeCCT();
-        }
 
-        /*public ICommand DaytimeCircleCommand
-        {
-            get
-            {
-                return new RelayCommand(() => { _bDTCircleEnabled = !_bDTCircleEnabled;});
-            }
         }
-
-        public ICommand ExpertModeCommand
-        {
-            get
-            {
-                return new RelayCommand(() => { _bExpertModeEnabled = !_bExpertModeEnabled; });
-            }
-        }*/
 
         private void ShowControlWindow()
         {
             if (Application.Current.MainWindow == null)
             {
                 Application.Current.MainWindow = new MainWindow();
-                Application.Current.MainWindow.DataContext = this;                
+                Application.Current.MainWindow.DataContext = this;
+                nl = new NeoLink();
+                nl.FadingTime = 100; //hier ms
             }
 
             Application.Current.MainWindow.Left = 0;
@@ -79,7 +69,7 @@ namespace PILEDClient.ViewModel
         }
 
 
-        #region commands
+#region commands
         public ICommand ShowWindowCommand
         {
             get
@@ -105,7 +95,28 @@ namespace PILEDClient.ViewModel
             }
         }
 
-        #endregion
+        public ICommand BrightnessValueChangedCommand
+        {
+            get
+            {
+                return new RelayCommand<double>(param => this.SendValue(param,NeoLinkMode.NL_BRIGHTNESS), param => (nl != null));
+            }
+        }
+
+        public void SendValue(double val, NeoLinkMode mode )
+        {
+            switch(mode)
+            {
+                case NeoLinkMode.NL_BRIGHTNESS:
+                    nl.setBrightness((byte)val);
+                    break;
+                case NeoLinkMode.NL_CCT:
+                    nl.setCCT((Single)val, 0); // brightness does not matter here
+                    break;
+            }
+        }
+
+#endregion
     }
 }
 

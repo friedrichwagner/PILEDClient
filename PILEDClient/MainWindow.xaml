@@ -16,21 +16,21 @@
         <GroupBox Header="Brightness" HorizontalAlignment="Stretch" Margin="5,5,5,5" VerticalAlignment="Stretch" Grid.Column="0">
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Label Content="{Binding ElementName=sldBrightness, Path=Value}" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" ContentStringFormat="{}{0:0}%"/>
-                <Slider x:Name="sldBrightness" HorizontalAlignment="Center"  VerticalAlignment="Top"  Margin="0,25,0,0" Height="250" Maximum="100" Orientation="Vertical" SmallChange="1"/>
+                <Slider x:Name="sldBrightness" HorizontalAlignment="Center"  VerticalAlignment="Top"  Margin="0,25,0,0" Height="250" Maximum="100" Orientation="Vertical" SmallChange="1" ValueChanged="sldBrightness_ValueChanged"/>
             </Grid>
         </GroupBox>
 
         <GroupBox Header="CCT" HorizontalAlignment="Stretch" Margin="5,5,5,5" VerticalAlignment="Stretch" Grid.Column="1">
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Label Content="{Binding ElementName=sldCCT, Path=Value}" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" ContentStringFormat="{}{0:0}K"/>
-                <Slider x:Name="sldCCT" HorizontalAlignment="Center"  VerticalAlignment="Top"  Margin="0,25,0,0" Height="250" Minimum="2500" Maximum="7000" Orientation="Vertical" SmallChange="1" IsEnabled="{Binding Path=DTCircleNotEnabled}"/>
+                <Slider x:Name="sldCCT" HorizontalAlignment="Center"  VerticalAlignment="Top"  Margin="0,25,0,0" Height="250" Minimum="2500" Maximum="7000" Orientation="Vertical" SmallChange="1" IsEnabled="{Binding Path=DTCircleNotEnabled}" ValueChanged="sldCCT_ValueChanged"/>
             </Grid>
         </GroupBox>
 
         <GroupBox Header="Red" HorizontalAlignment="Stretch" Margin="5,5,5,5" VerticalAlignment="Stretch" Grid.Column="2">
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Label Content="{Binding ElementName=sldRed, Path=Value}" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" ContentStringFormat="{}{0:0}"/>
-                <Slider x:Name="sldRed" HorizontalAlignment="Center"  VerticalAlignment="Top"  Margin="0,25,0,0" Height="250" Minimum="0" Maximum="255" Orientation="Vertical" SmallChange="1" Background="#33FF0000"/>
+                <Slider x:Name="sldRed" HorizontalAlignment="Center"  VerticalAlignment="Top"  Margin="0,25,0,0" Height="250" Minimum="0" Maximum="255" Orientation="Vertical" SmallChange="1" Background="#33FF0000" />
             </Grid>
         </GroupBox>
 
@@ -48,7 +48,7 @@
                     <ColumnDefinition Width="9*"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding ElementName=sldBlue, Path=Value}" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" ContentStringFormat="{}{0:0}" Grid.Column="1"/>
-                <Slider x:Name="sldBlue" HorizontalAlignment="Center"  VerticalAlignment="Top"  Margin="0,25,0,0" Height="250" Minimum="0" Maximum="255" Orientation="Vertical" SmallChange="1" Grid.Column="1" Background="#330000FF"/>
+                <Slider x:Name="sldBlue" HorizontalAlignment="Center"  VerticalAlignment="Top"  Margin="0,25,0,0" Height="250" Minimum="0" Maximum="255" Orientation="Vertical" SmallChange="1" Grid.Column="1" Background="#330000FF" />
             </Grid>
         </GroupBox>
 

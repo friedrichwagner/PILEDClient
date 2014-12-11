@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PILEDClient.ViewModel;
-
+using Lumitech.Interfaces;
 
 namespace PILEDClient
 {
@@ -36,6 +36,18 @@ namespace PILEDClient
 
             this.Top = SystemParameters.WorkArea.Height - this.Height - 10;
             this.Left = SystemParameters.PrimaryScreenWidth - this.Width;
+        }
+
+        private void sldBrightness_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (DataContext!= null)
+                (DataContext as PILEDClientViewModel).SendValue((sender as Slider).Value/100*255, NeoLinkMode.NL_BRIGHTNESS);
+        }
+
+        private void sldCCT_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (DataContext != null)
+                (DataContext as PILEDClientViewModel).SendValue((sender as Slider).Value, NeoLinkMode.NL_CCT);
         }
     }
 }
