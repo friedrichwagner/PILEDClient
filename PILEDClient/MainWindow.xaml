@@ -2,8 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:extended="clr-namespace:Lumitech.Helpers"
-        Title="Lumitech" Height="350" Width="500" IsVisibleChanged="Window_IsVisibleChanged" Icon="Images/Lumitech.ico" WindowStyle="ToolWindow">
-    <Grid>
+        Title="Lumitech" Height="400" Width="528" IsVisibleChanged="Window_IsVisibleChanged" Icon="Images/Lumitech.ico" WindowStyle="ToolWindow">
+    <Grid Margin="0,0,2,-25">
         <Grid.ColumnDefinitions>
             <extended:ColumnDefinitionExtended/>
             <extended:ColumnDefinitionExtended/>
@@ -15,15 +15,27 @@
 
         <GroupBox Header="Brightness" HorizontalAlignment="Stretch" Margin="5,5,5,5" VerticalAlignment="Stretch" Grid.Column="0">
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Label Content="{Binding ElementName=sldBrightness, Path=Value}" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" ContentStringFormat="{}{0:0}%"/>
-                <Slider x:Name="sldBrightness" HorizontalAlignment="Center"  VerticalAlignment="Top"  Margin="0,25,0,0" Height="250" Maximum="100" Orientation="Vertical" SmallChange="1" ValueChanged="sldBrightness_ValueChanged"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Label Content="{Binding ElementName=sldBrightness, Path=Value}" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" ContentStringFormat="{}{0:0}%" Grid.Row="0"/>
+                <Slider x:Name="sldBrightness" HorizontalAlignment="Center"  VerticalAlignment="Top"  Margin="0,25,0,0" Height="250" Maximum="100" Orientation="Vertical" Grid.Row="0" SmallChange="1" ValueChanged="sldBrightness_ValueChanged"/>
+                <Image HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Source="Images/Brightness.png" Height="56" Width="51" Grid.Row="1" />
             </Grid>
         </GroupBox>
 
         <GroupBox Header="CCT" HorizontalAlignment="Stretch" Margin="5,5,5,5" VerticalAlignment="Stretch" Grid.Column="1">
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Label Content="{Binding ElementName=sldCCT, Path=Value}" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" ContentStringFormat="{}{0:0}K"/>
-                <Slider x:Name="sldCCT" HorizontalAlignment="Center"  VerticalAlignment="Top"  Margin="0,25,0,0" Height="250" Minimum="2500" Maximum="7000" Orientation="Vertical" SmallChange="1" IsEnabled="{Binding Path=DTCircleNotEnabled}" ValueChanged="sldCCT_ValueChanged"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Label Content="{Binding ElementName=sldCCT, Path=Value}" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" ContentStringFormat="{}{0:0}K" Grid.Row="0"/>
+                <Slider x:Name="sldCCT" HorizontalAlignment="Center"  VerticalAlignment="Top"  Margin="0,25,0,0" Height="250" Minimum="2500" Maximum="7000" Orientation="Vertical" Grid.Row="0" SmallChange="1" IsEnabled="{Binding Path=DTCircleNotEnabled}" ValueChanged="sldCCT_ValueChanged"/>
+                <Image HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Source="Images/CCT.png" Height="56" Width="51" Grid.Row="1" />
             </Grid>
         </GroupBox>
 
@@ -36,8 +48,13 @@
 
         <GroupBox Header="Green" HorizontalAlignment="Stretch" Margin="5,5,5,5" VerticalAlignment="Stretch" Grid.Column="3">
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Label Content="{Binding ElementName=sldGreen, Path=Value}" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" ContentStringFormat="{}{0:0}"/>
-                <Slider x:Name="sldGreen" HorizontalAlignment="Center"  VerticalAlignment="Top"  Margin="0,25,0,0" Height="250" Minimum="0" Maximum="255" Orientation="Vertical" SmallChange="1" Background="#3300FF00"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label Content="{Binding ElementName=sldGreen, Path=Value}" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" ContentStringFormat="{}{0:0}" Grid.Row="0"/>
+                <Slider x:Name="sldGreen" HorizontalAlignment="Center"  VerticalAlignment="Top"  Margin="0,25,0,0" Height="250" Minimum="0" Maximum="255" Orientation="Vertical" Grid.Row="0" SmallChange="1" Background="#3300FF00"/>
+                <Image HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Source="Images/RGB.png" Height="56" Width="51" Grid.Row="1" />
             </Grid>
         </GroupBox>
 
@@ -53,7 +70,7 @@
         </GroupBox>
 
         <GroupBox Header="x/y" HorizontalAlignment="Stretch" Margin="5,5,5,5" VerticalAlignment="Stretch" Grid.Column="5">
-                <StackPanel HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch">
+            <StackPanel HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch">
                 <Label Content="x:" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtX" Height="23" TextWrapping="Wrap" Text="0,1234"/>
                 <Label Content="y:" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>

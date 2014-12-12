@@ -51,8 +51,10 @@ namespace PILEDClient.ViewModel
             {
                 Application.Current.MainWindow = new MainWindow();
                 Application.Current.MainWindow.DataContext = this;
+
                 nl = new NeoLink();
-                nl.FadingTime = 100; //hier ms
+                nl.Connect();
+                nl.setFadeTime(200);
             }
 
             Application.Current.MainWindow.Left = 0;
@@ -111,7 +113,7 @@ namespace PILEDClient.ViewModel
                     nl.setBrightness((byte)val);
                     break;
                 case NeoLinkMode.NL_CCT:
-                    nl.setCCT((Single)val, 0); // brightness does not matter here
+                    nl.setCCT((Single)val); // brightness does not matter here
                     break;
             }
         }

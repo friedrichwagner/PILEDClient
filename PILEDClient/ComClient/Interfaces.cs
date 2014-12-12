@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using System.Text;
+using System.Net;
 
 namespace Lumitech.Interfaces
 {
@@ -9,25 +10,25 @@ namespace Lumitech.Interfaces
     public enum TuneableWhiteType { None, PILED_MM1, PILED_MM2, CWWW};
     public enum CommInterface { None, Zigbee, ZLL, DMX, DALI, NEOLINK }
 
-    public interface IPILed
+    public interface IPILed2
     {
+        bool Connect();
         bool Connect(string comport);
-        bool Connect(string startAddress, string UDPPort);
+        bool Connect(IPAddress startAddress, int UDPPort);
         bool Disconnect();
         bool isConnected { get; }
         void Flash(byte[] b, byte cnt);
         void setBrightness(byte b);
-        void setBrightness(byte[] b);
-        void setBrightnessOneModule(byte[] b, byte iModulenr);
-        void setCCT(Single CCT, byte brightness);
-        void setXy(Single[] cie, byte brightness);
+        void setFadeTime(int f);
+        void setCCT(Single CCT);
+        void setXy(Single[] cie);
         void setRGB(byte[] b);
         CommInterface Interface { get; }
         TuneableWhiteType TWType { get; }
     }
 
     //FW 10.2.2014 - CW-WW Zigbee Interface to LTEF,LMU ohne Memory Map
-    public interface ILTEF: IPILed
+    public interface ILTEF: IPILed2
     {
         Single[,] getEckCoords();
         Single[] getCurrGains();

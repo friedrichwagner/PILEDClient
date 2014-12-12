@@ -122,7 +122,7 @@ namespace Lumitech.Interfaces
             for (int k = 0; k < DATA_SIZE; k++) byArrBuffer[i++] = data[k];
 
             byArrBuffer[i++] = byGroupUpdate;
-            byArrBuffer[i++] = calcCRC();
+            byArrBuffer[i++] = 0;// calcCRC(); // not used in Box
             byArrBuffer[i++] = byStop;
 
             return byArrBuffer;
@@ -154,7 +154,7 @@ namespace Lumitech.Interfaces
 
     }
 
-    class NeoLink : IPILed//, IObserver<PILEDData>
+    class NeoLink : IPILed2
     {
         private NeoLinkData nlFrame = NeoLinkData.NewFrame();
         private Object thisLock = new Object();
@@ -176,16 +176,9 @@ namespace Lumitech.Interfaces
         private Single[] lastXy = new Single[2];
         private byte[] lastRGB = new byte[3];
         private int fadetime = 0;
-        public int FadingTime       //hier in ms
-        {
-            get { return fadetime*100; }    
-            set { 
-                fadetime = value;
-                byFadetime = BitConverter.GetBytes((UInt16)(fadetime / 100));
-            }
-        }
-
         private byte[] byFadetime = new byte[2] {0,0};
+
+        private Thread SleepThread;
 
         public NeoLink()
         {
@@ -193,16 +186,35 @@ namespace Lumitech.Interfaces
             fadetime = ini.Read<int>("NEOLINK", "Fadetime", 0);
             enumIF = NEOLINK_INTERFACE.NONE;
 
-            string udpaddressString = ini.Read<string>("NEOLINK", "UDP-Address", "");
-            IPAddress udpaddress;
-            if (IPAddress.TryParse(udpaddressString, out udpaddress))
-            {
-                int portnr= ini.Read<int>("NEOLINK", "UDP-Port", UDPPort);
-                Connect(udpaddressString, portnr.ToString());
-            }                        
+            SleepThread = new Thread(new ThreadStart(SleepFadeTime));
         }
 
         #region IPILed-Interface
+
+        public bool Connect()
+        {
+            Settings ini = Settings.GetInstance();
+            bool ret = false;
+
+            string udpaddressString = ini.Read<string>("NEOLINK", "UDP-Address", "");
+            string comport = ini.Read<string>("NEOLINK", "COM-Port", "");
+
+            IPAddress udpaddress;
+            if (IPAddress.TryParse(udpaddressString, out udpaddress))
+            {
+                int portnr = ini.Read<int>("NEOLINK", "UDP-Port", UDPPort);
+                ret= Connect(udpaddress, portnr);
+            }
+            else if (comport.Length > 0)
+            {
+                ret= Connect(comport);
+            }
+
+
+            return ret;
+        }
+
+
         public bool Connect(string portname)
         {
             serial = new SerialPort();
@@ -222,11 +234,11 @@ namespace Lumitech.Interfaces
             return serial.IsOpen;
         }
 
-        public bool Connect(string IPAddress, string PortNr)
+        public bool Connect(IPAddress ip, int PortNr)
         {
             enumIF = NEOLINK_INTERFACE.UDP;
 
-            udpclient.Connect(IPAddress, Int16.Parse(PortNr));
+            udpclient.Connect(ip, PortNr);
 
             return true;
         }
@@ -237,6 +249,12 @@ namespace Lumitech.Interfaces
             {
                 serial.Close();
                 return serial.IsOpen;
+            }
+
+            if (enumIF == NEOLINK_INTERFACE.UDP)
+            {
+                udpclient.Close();
+                return true;
             }
 
             return true;            
@@ -297,7 +315,7 @@ namespace Lumitech.Interfaces
             setBrightness(b);
         }
 
-        public void setCCT(Single CCT, byte brightness)
+        public void setCCT(Single CCT)
         {
             nlFrame.byMode = (byte)NeoLinkMode.NL_CCT;
 
@@ -318,7 +336,7 @@ namespace Lumitech.Interfaces
             lastCCT = CCT;
         }
 
-        public void setXy(Single[] cie, byte brightness)
+        public void setXy(Single[] cie)
         {
             nlFrame.byMode = (byte)NeoLinkMode.NL_XY;
 
@@ -349,6 +367,14 @@ namespace Lumitech.Interfaces
             lastRGB = b;
 
         }
+
+        public void setFadeTime(int f) // Input is ms
+        {            
+            fadetime = f;
+            //Zigbee uses 1/10 sek unit
+            byFadetime = BitConverter.GetBytes((UInt16)(fadetime / 100));
+        }
+
         #endregion
 
         private void Send(bool waitReceive = false)
@@ -357,16 +383,23 @@ namespace Lumitech.Interfaces
             {
                 nlFrame.ToByteArray();
 
-                if (enumIF == NEOLINK_INTERFACE.USB)
-                    serial.Write(nlFrame.byArrBuffer, 0, nlFrame.byArrBuffer.Length);
-                else if (enumIF == NEOLINK_INTERFACE.UDP)
+                if (!SleepThread.IsAlive)
                 {
-                    udpclient.Send(nlFrame.byArrBuffer, nlFrame.byArrBuffer.Length);
-                    Thread.Sleep(200);
-                }
 
-                if (waitReceive)
-                    Receive();
+                    if (enumIF == NEOLINK_INTERFACE.USB)
+                        serial.Write(nlFrame.byArrBuffer, 0, nlFrame.byArrBuffer.Length);
+                    else if (enumIF == NEOLINK_INTERFACE.UDP)
+                    {
+                        udpclient.Send(nlFrame.byArrBuffer, nlFrame.byArrBuffer.Length);
+                    }
+
+                    if (waitReceive)
+                        Receive();
+                }
+                else
+                {
+                    SleepThread.Start();
+                }
             }
         }
 
@@ -375,67 +408,9 @@ namespace Lumitech.Interfaces
             //tbd
         }
 
-#region Observer Pattern
-        /*
-        public virtual void Subscribe(Object provider)
+        private void SleepFadeTime()
         {
-            Settings ini = Settings.GetInstance();
-
-            cancellation = provider.Subscribe(this);
-
-            //First see, if we have a NeoLink Box
-            string strUDPAddress = ini.Read<string>("NOELINK", "UDP_Address", "");
-            if (strUDPAddress.Length>0)
-                Connect(strUDPAddress, UDPPort.ToString());
-
-            string[] strComport = ini.Read<string>("NOELINK", "USBCom", "").Split(',');
-            if (strComport.Length > 0)
-                Connect(strComport[0]);
-
+            Thread.Sleep(fadetime); // in millisek
         }
-
-        public virtual void Unsubscribe()
-        {
-            cancellation.Dispose();
-        }
-
-        //Called from UDP Server when closing application
-        public virtual void OnCompleted()
-        {
-            Disconnect();
-        }
-
-        public virtual void OnError(Exception e)
-        {
-
-        }
-
-        //Called from UDP Server when new data arrive
-        public virtual void OnNext(PILEDData info)
-        {
-            nlFrame.byAddress = (byte)info.groupid;
-
-            switch (info.mode)
-            {
-                case PILEDMode.PILED_SET_BRIGHTNESS:
-                    this.setBrightness((byte)info.brightness);
-                    break;
-                case PILEDMode.PILED_SET_CCT:
-                    this.setCCT(info.cct, (byte)info.brightness);
-                    break;
-                case PILEDMode.PILED_SET_XY:
-                    float[] f = new float[2];
-                    f[0] = (float)info.xy[0]; f[1] = (float)info.xy[1];
-                    this.setXy(f, (byte)info.brightness);
-                    break;
-                case PILEDMode.PILED_SET_RGB:
-                    byte[] b = new byte[3];
-                    b[0] = (byte)info.rgb[0]; b[1] = (byte)info.rgb[1]; b[2] = (byte)info.rgb[2];
-                    this.setRGB(b);
-                    break;
-            }
-        }
-        */
- #endregion
     }
 }

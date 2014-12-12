@@ -117,6 +117,13 @@
     <Resource Include="Images\Lumitech.ico" />
     <Resource Include="Images\Lumitech.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Brightness.png" />
+    <Resource Include="Images\CCT.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\RGB.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
